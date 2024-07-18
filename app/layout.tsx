@@ -26,7 +26,7 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="64x64" href="/logo-64x64.ico" />
         <link rel="icon" type="image/png" sizes="128x128" href="/logo-128x128.ico" />
         <link rel="icon" type="image/png" sizes="256x256" href="/logo-256x256.ico" />
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={inter.className}>{children}</body>
     </html>

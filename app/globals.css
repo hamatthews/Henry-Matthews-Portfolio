@@ -7,6 +7,9 @@
   --color-2a: rgb(165,130,190);
   --color-2b: rgb(197,183,207);
 
+  --top: calc(100px + var(--grid-gap));
+
+
   font-family: "Kode Mono", monospace;
 }
 
@@ -18,55 +21,51 @@ main {
   display: grid;
   gap: var(--grid-gap);
   grid-template:
-  "lp ba rp" 300px
+  "lp ba rp" 298px
   "lp cc rp" 1fr
   / minmax(100px, 1fr) minmax(0px, min(100vw - 100px, 1000px)) minmax(0, 1fr);
   ;
 
-  min-height: 100vh;
-
-  /* temp */
   height: fit-content;
 }
+main.stuck {
+  grid-template:
+  "nb nb nb" 100px
+  "lp ba rp" 298px
+  "lp cc rp" 1fr
+  / minmax(100px, 1fr) minmax(0px, min(100vw - 100px, 1000px)) minmax(0, 1fr);
+  ;
+}
+
 
 /* NavBar */
 nav {
   grid-area: cc;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: sticky;
+  
   width: 100%;
-  height: 100px;
   z-index: 2;
 }
 nav.stuck {
-  position: fixed;
-  left: 0;
-
+  grid-area: nb;
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(0px, min(100vw - 100px, 1000px)) minmax(0, 1fr);
+  
+  top: 0px;
   background-color: rgba(0,0,0,.85);
-  width: 100%;
-
   transition: background-color .2s .1s;
 }
 
 .nav-links {
-  position: absolute;
-  left: 28%;
-
   display: flex;
-  gap: 20px;
-  justify-content: center;
-
-  width: 72%;
-  height: fit-content;
+  justify-content: space-around;
+  align-items: center;
+  height: 100px;
   font-size: clamp(18px, 3vw, 24px);
-}
-.nav-links.stuck {
-
 }
 
 .nav-link {
-  transition: box-shadow .5s;
+  transition: box-shadow .5s, flex-grow 1s;
   padding: 0 7px;
   cursor: pointer;
   text-decoration: none;
@@ -78,9 +77,33 @@ nav.stuck {
   box-shadow: 0 0 2px var(--color-2b),0 0 2px var(--color-2b)
 }
 
+/* Banner Profile Picture */
+
+.nav-profile-picture {
+  align-self: start;
+  margin-top: calc(-100px - var(--grid-gap)/2);
+  width: auto;
+  height: 200px;
+  outline: 5px solid var(--color-2b);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity .4s;
+}
+
+.nav-profile-picture.loaded {
+  display: block;
+  opacity: 1;
+}
+
+.nav-profile-picture.stuck {
+  visibility: hidden;
+}
+
 .stuck-point {
   position: relative;
-  top: calc(300px - var(--grid-gap));
+  top: 298px;
+  height: 2px;
+  margin: -1px 0;
 }
 
 /* Banner */
@@ -93,6 +116,9 @@ nav.stuck {
 
   position: relative;
   overflow: hidden;
+}
+.banner.stuck {
+  margin-bottom: 100px;
 }
 
 .banner-background {
@@ -127,64 +153,40 @@ nav.stuck {
   fill: var(--color-2b);
 }
 
-/* Profile Picture */
+/* Banner Profile Picture */
 
-.profile-picture-container {
+.banner-profile-picture-container {
   grid-area: ba;
-}
-.profile-picture-container.narrow {
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.profile-picture {
+.banner-profile-picture {
   position: relative;
-  left: 100px;
-  bottom: calc(-200px - var(--grid-gap)/2);
-
-  width: auto;
-  max-height: 200px;
-  border-radius: 50%;
-  outline: 5px solid var(--color-2b);
-  opacity: 0;
-  transition: opacity .4s;
-  z-index: 2;
-}
-.profile-picture.narrow{
   top: 0;
   left: 0;
-  
-  max-height: 120px;
-  outline: none;
-  opacity: .8;
+  max-height: 120px;  
+  border-radius: 50%;
 
-
-/* clip-path: path("M 75.5, 83.795 Q 72.5, 89 66.5, 89 L 33.5, 89 Q 27.5, 89 24.5, 83.795 L 8, 55.205 Q 5, 50 8, 44.205 L 24.5, 16.205 Q 27.5, 11 33.5, 11 L 66.5, 11 Q 72.5, 11 75.5, 16.205 L 92, 44.205 Q 95, 50 92, 55.205 Z");
-  transform: scale(1.6) translate(0px, -1.4px); */
+  opacity: 0;
+  z-index: 2;
 }
 
-.profile-picture.loaded {
-  opacity: 1;
-}
-
-.profile-picture.stuck {
+.banner-profile-picture.stuck {
   opacity: 0;
   transition: none;
-}
-
-.narrow-point {
-  position: absolute;
-  top: 300px;
-  left: 900px;
 }
 
 /* Content Column */
 
 .content-column {
   grid-area: cc;
-  margin-top: var(--top);
   z-index: 1;
+}
+.content-column.stuck {
+    margin-top: -100px;
 }
 
 .content-background {
@@ -195,6 +197,7 @@ nav.stuck {
   background: var(--color-1a);
 }
 .content-background.stuck {
+  margin-top: -100px;
   --top: calc(100px + var(--grid-gap));
 
   top: var(--top);
@@ -218,6 +221,9 @@ nav.stuck {
 .content-segment {
  padding-top: 130px;
  margin-bottom: -80px;
+
+ word-break: break-word;
+ overflow-wrap: break-word;
 }
 
 .last-segment {
@@ -304,8 +310,18 @@ nav.stuck {
   position: fixed;
   width: 100%;
   height: 100vh;
-  background-image: linear-gradient(gainsboro, var(--color-2a));
   background-image: linear-gradient(-135deg, var(--color-2b), indigo);
 
   z-index: -1;
+}
+
+@media (max-width: 900px) {
+  .nav-profile-picture, .nav-profile-picture.loaded {
+    display: none;
+  }
+
+  .banner-profile-picture.loaded {
+    opacity: .8;
+    transition: opacity .4s;
+  }
 }

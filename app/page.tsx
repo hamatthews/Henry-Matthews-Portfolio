@@ -21,21 +21,18 @@ export default function Home() {
   const contactInViewRef = useRef(null);
 
   const [loadedClass, setLoadedClass] = useState("");
-  const [navIsStuck, setNavIsStuck] = useState(false);
-  const [screenIsNarrow, setScreenIsNarrow] = useState(false);
+  const [stuckClass, setStuckClass] = useState("");
 
   const [currentHeader, setCurrentHeader] = useState("");
 
   useEffect(() => {
       const stuckPoint = stuckElement.current;
-      const narrowPoint = narrowElement.current;
 
       const bioPoint = bioInViewRef.current;
       const projectsPoint = projectsInViewRef.current;
       const contactPoint = contactInViewRef.current;
 
       let stuckObserver = null;
-      let narrowObserver = null;
 
       let bioObserver = null;
       let projectsObserver = null;
@@ -86,25 +83,13 @@ export default function Home() {
       if (stuckPoint) {
         stuckObserver = new IntersectionObserver(([entry]) => {
           if (!entry.isIntersecting) {
-              setNavIsStuck(true);
+              setStuckClass(" stuck");
           }
-          else setNavIsStuck(false);
-        }, { threshold: [1.0] });
+          else setStuckClass("");
+        }, { threshold: [0, 1.0] });
 
         stuckObserver.observe(stuckPoint);
       }
-
-      if (narrowPoint) {
-        narrowObserver = new IntersectionObserver(([entry]) => {
-          if (!entry.isIntersecting) {
-              setScreenIsNarrow(true);
-          }
-          else setScreenIsNarrow(false);
-        }, { threshold: [1.0] });
-
-        narrowObserver.observe(narrowPoint);
-      }
-
 
       return () => {
         if (stuckObserver !== null) {
@@ -117,20 +102,16 @@ export default function Home() {
       setLoadedClass(" loaded");
     },[]);
 
-  let stuckClass = navIsStuck ? " stuck" : "";
-  let narrowClass = screenIsNarrow ? " narrow" : "";
-
   return (
     <>
       <div ref={stuckElement} className="stuck-point"/>
-      <div ref={narrowElement} className="narrow-point"/>
       <Background/>
-      <main ref={mainRef}>
+      <main className={stuckClass} ref={mainRef}>
         <Banner loadedClass={loadedClass} stuckClass={stuckClass} />
-        <div className={"profile-picture-container" + narrowClass}>
-          <img className={"profile-picture" + loadedClass + narrowClass + stuckClass} src="/headshot.jpg" alt="Profile"/>  
+        <div className={"banner-profile-picture-container"}>
+          <img className={"banner-profile-picture" + loadedClass + stuckClass} src="/headshot.jpg" alt="Profile"/>  
         </div>
-        <NavBar stuckClass={stuckClass} />
+        <NavBar loadedClass={loadedClass} stuckClass={stuckClass} />
         <ContentColumn stuckClass={stuckClass} bioRef={bioRef} projectsRef={projectsRef} contactRef={contactRef} bioInViewRef={bioInViewRef} projectsInViewRef={projectsInViewRef} contactInViewRef={contactInViewRef}/>
         <LeftPanel stuckClass={stuckClass} currentHeader={currentHeader} mainRef={mainRef} bioRef={bioRef} projectsRef={projectsRef} contactRef={contactRef} />
         <div className={"right-panel" + stuckClass}></div>

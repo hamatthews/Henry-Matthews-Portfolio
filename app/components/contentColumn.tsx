@@ -1,5 +1,3 @@
-import NavBar from "./navBar";
-
 export default function ContentColumn({stuckClass, bioRef, projectsRef, contactRef, bioInViewRef, projectsInViewRef, contactInViewRef} :
 {
     stuckClass: string, bioRef: React.MutableRefObject<any>, projectsRef: React.MutableRefObject<any>, contactRef: React.MutableRefObject<any>,
@@ -13,6 +11,7 @@ export default function ContentColumn({stuckClass, bioRef, projectsRef, contactR
             </div>
             <div className={"content-column" + stuckClass}>
                 <div className="content-segments">
+
                     <div className="segment-view-ref" ref={bioInViewRef} />
                     <div ref={bioRef} className="content-segment first-segment">
                         <h1>Henry Matthews</h1>

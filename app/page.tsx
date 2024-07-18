@@ -1,113 +1,142 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect, useRef } from 'react';
+
+import Background from "./components/background";
+import Banner from "./components/banner";
+import ContentColumn from "./components/contentColumn";
+import LeftPanel from "./components/LeftPanel";
+import NavBar from './components/navBar';
 
 export default function Home() {
+
+  const stuckElement = useRef<HTMLDivElement>(null);
+  const narrowElement = useRef<HTMLDivElement>(null);
+  const mainRef = useRef(null);
+  const bioRef = useRef(null);
+  const projectsRef = useRef(null);
+  const contactRef = useRef(null);
+  const bioInViewRef = useRef(null);
+  const projectsInViewRef = useRef(null);
+  const contactInViewRef = useRef(null);
+
+  const [loadedClass, setLoadedClass] = useState("");
+  const [navIsStuck, setNavIsStuck] = useState(false);
+  const [screenIsNarrow, setScreenIsNarrow] = useState(false);
+
+  const [currentHeader, setCurrentHeader] = useState("");
+
+  useEffect(() => {
+      const stuckPoint = stuckElement.current;
+      const narrowPoint = narrowElement.current;
+
+      const bioPoint = bioInViewRef.current;
+      const projectsPoint = projectsInViewRef.current;
+      const contactPoint = contactInViewRef.current;
+
+      let stuckObserver = null;
+      let narrowObserver = null;
+
+      let bioObserver = null;
+      let projectsObserver = null;
+      let contactObserver = null;
+
+      if (bioPoint) {
+        bioObserver = new IntersectionObserver(([entry]) => {
+            // setBioInView(true);
+            if (entry.boundingClientRect.top < 0) {
+              setCurrentHeader("bio");
+            }
+            else {
+              setCurrentHeader("");
+            }
+        }, { threshold: [0, 1.0] });
+
+        bioObserver.observe(bioPoint);
+      }
+
+      if (projectsPoint) {
+        projectsObserver = new IntersectionObserver(([entry]) => {
+          if (entry.boundingClientRect.top < 0) {
+            setCurrentHeader("projects");
+          }
+          else {
+            setCurrentHeader("bio");
+          }
+
+        }, { threshold: [0, 1.0] });
+
+        projectsObserver.observe(projectsPoint);
+      }
+
+      if (contactPoint) {
+        contactObserver = new IntersectionObserver(([entry]) => {
+          if (entry.boundingClientRect.top < 0) {
+            setCurrentHeader("contact");
+          }
+          else {
+            setCurrentHeader(e => e != "bio" ? "projects" : e);
+          }
+
+        }, { threshold: [0, 1.0] });
+
+        contactObserver.observe(contactPoint);
+      }
+
+      if (stuckPoint) {
+        stuckObserver = new IntersectionObserver(([entry]) => {
+          if (!entry.isIntersecting) {
+              setNavIsStuck(true);
+          }
+          else setNavIsStuck(false);
+        }, { threshold: [1.0] });
+
+        stuckObserver.observe(stuckPoint);
+      }
+
+      if (narrowPoint) {
+        narrowObserver = new IntersectionObserver(([entry]) => {
+          if (!entry.isIntersecting) {
+              setScreenIsNarrow(true);
+          }
+          else setScreenIsNarrow(false);
+        }, { threshold: [1.0] });
+
+        narrowObserver.observe(narrowPoint);
+      }
+
+
+      return () => {
+        if (stuckObserver !== null) {
+          stuckObserver.disconnect();
+        }
+      }
+    }, []);
+
+    useEffect(() => {
+      setLoadedClass(" loaded");
+    },[]);
+
+  let stuckClass = navIsStuck ? " stuck" : "";
+  let narrowClass = screenIsNarrow ? " narrow" : "";
+
+    console.log(currentHeader);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <div ref={stuckElement} className="stuck-point"/>
+      <div ref={narrowElement} className="narrow-point"/>
+      <Background/>
+      <main ref={mainRef}>
+        <Banner loadedClass={loadedClass} stuckClass={stuckClass} />
+        <div className={"profile-picture-container" + narrowClass}>
+          <img className={"profile-picture" + loadedClass + narrowClass + stuckClass} src="/headshot.jpg" alt="Profile"/>  
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+        <NavBar stuckClass={stuckClass} />
+        <ContentColumn stuckClass={stuckClass} bioRef={bioRef} projectsRef={projectsRef} contactRef={contactRef} bioInViewRef={bioInViewRef} projectsInViewRef={projectsInViewRef} contactInViewRef={contactInViewRef}/>
+        <LeftPanel stuckClass={stuckClass} currentHeader={currentHeader} mainRef={mainRef} bioRef={bioRef} projectsRef={projectsRef} contactRef={contactRef} />
+        <div className={"right-panel" + stuckClass}></div>
+      </main>
+    </>
   );
 }

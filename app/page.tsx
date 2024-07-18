@@ -61,7 +61,7 @@ export default function Home() {
             setCurrentHeader("projects");
           }
           else {
-            setCurrentHeader("bio");
+            setCurrentHeader(e => e != "" ? "bio" : e);
           }
 
         }, { threshold: [0, 1.0] });
@@ -75,7 +75,7 @@ export default function Home() {
             setCurrentHeader("contact");
           }
           else {
-            setCurrentHeader(e => e != "bio" ? "projects" : e);
+            setCurrentHeader(e => e != "bio" && e != "" ? "projects" : e);
           }
 
         }, { threshold: [0, 1.0] });
@@ -119,8 +119,6 @@ export default function Home() {
 
   let stuckClass = navIsStuck ? " stuck" : "";
   let narrowClass = screenIsNarrow ? " narrow" : "";
-
-    console.log(currentHeader);
 
   return (
     <>

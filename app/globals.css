@@ -175,7 +175,8 @@ nav.stuck {
 }
 
 .banner-profile-picture.stuck {
-  opacity: 0;
+  /* opacity: 0; */
+  visibility: hidden;
   transition: none;
 }
 
@@ -233,8 +234,8 @@ nav.stuck {
 
 .segment-view-ref {
   position: relative;
-  height: 2px;
-  margin: -1px 0;
+  height: 6px;
+  margin: -3px 0;
 }
 
 /* Side Panels */

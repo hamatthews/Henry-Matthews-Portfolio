@@ -41,10 +41,12 @@ export default function Home() {
       if (bioPoint) {
         bioObserver = new IntersectionObserver(([entry]) => {
             // setBioInView(true);
+            console.log(entry);
+
             if (entry.boundingClientRect.top < 0) {
               setCurrentHeader("bio");
             }
-            else {
+            else  {
               setCurrentHeader("");
             }
         }, { threshold: [0, 1.0] });

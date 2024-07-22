@@ -226,6 +226,9 @@ nav.stuck {
  word-break: break-word;
  overflow-wrap: break-word;
 }
+.content-segment > p {
+  font-family: "Source Code Pro", monospace;
+}
 
 .last-segment {
   margin-bottom: 0;
@@ -236,6 +239,18 @@ nav.stuck {
   position: relative;
   height: 6px;
   margin: -3px 0;
+}
+
+.project-image-container {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.project-image {
+  max-width: 500px;
+  width: 50%;
 }
 
 /* Side Panels */
@@ -311,7 +326,7 @@ nav.stuck {
   position: fixed;
   width: 100%;
   height: 100vh;
-  background-image: linear-gradient(-135deg, var(--color-2b), indigo);
+  background-image: linear-gradient(var(--color-2b), indigo, black);
 
   z-index: -1;
 }
